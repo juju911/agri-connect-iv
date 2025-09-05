@@ -74,6 +74,7 @@ export type Database = {
           message: string
           name: string
           subject: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -83,6 +84,7 @@ export type Database = {
           message: string
           name: string
           subject: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -92,6 +94,7 @@ export type Database = {
           message?: string
           name?: string
           subject?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -356,6 +359,7 @@ export type Database = {
           registration_date: string
           status: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           amount?: number | null
@@ -373,6 +377,7 @@ export type Database = {
           registration_date?: string
           status?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           amount?: number | null
@@ -390,6 +395,7 @@ export type Database = {
           registration_date?: string
           status?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
