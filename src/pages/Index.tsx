@@ -24,7 +24,7 @@ const Index = () => {
               to="/auth"
               className="inline-flex items-center justify-center px-8 py-3 bg-white text-agri-green font-semibold rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Commencer gratuitement
+              Commencer
             </Link>
             <Link 
               to="/auth"
