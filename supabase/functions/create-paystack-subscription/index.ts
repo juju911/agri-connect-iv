@@ -23,31 +23,55 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Create Paystack subscription function started');
+    
     // Get authenticated user
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Header d'autorisation manquant");
+    }
+
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    console.log('Token extracted, getting user...');
+    
+    const { data, error: authError } = await supabaseClient.auth.getUser(token);
+    
+    if (authError) {
+      console.error('Auth error:', authError);
+      throw new Error("Erreur d'authentification: " + authError.message);
+    }
+    
     const user = data.user;
 
     if (!user?.email) {
       throw new Error("Utilisateur non authentifié");
     }
 
+    console.log('User authenticated:', user.email);
+
     // Get user profile
-    const { data: profile } = await supabaseClient
+    const { data: profile, error: profileError } = await supabaseClient
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (!profile) {
-      throw new Error("Profil utilisateur non trouvé");
+    if (profileError) {
+      console.error('Profile error:', profileError);
+      throw new Error("Erreur lors de la récupération du profil: " + profileError.message);
     }
+
+    if (!profile) {
+      console.error('No profile found for user:', user.id);
+      throw new Error("Profil utilisateur non trouvé. Veuillez vous reconnecter.");
+    }
+
+    console.log('Profile found:', profile.role);
 
     const { plan_type, amount } = await req.json();
     
