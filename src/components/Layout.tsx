@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sprout, BarChart3, Users, LogOut, User, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import ChatBot from './ChatBot';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -113,12 +114,15 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Main Content */}
       <main>{children}</main>
 
+      {/* AI Chatbot */}
+      <ChatBot />
+
       {/* WhatsApp Float Button */}
       <a
         href="https://wa.me/2250566997785?text=Bonjour%2C%20je%20viens%20du%20site%20AgriChain%2B."
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
         aria-label="Contacter via WhatsApp"
       >
         <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
