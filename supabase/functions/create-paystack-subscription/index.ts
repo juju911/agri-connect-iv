@@ -25,7 +25,7 @@ serve(async (req) => {
   try {
     console.log('Create Paystack subscription function started');
     
-    // Get authenticated user
+    // Get authenticated user with anon key
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -54,8 +54,15 @@ serve(async (req) => {
 
     console.log('User authenticated:', user.email);
 
-    // Get user profile
-    const { data: profile, error: profileError } = await supabaseClient
+    // Create service client to bypass RLS for profile lookup
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    // Get user profile using service role
+    const { data: profile, error: profileError } = await supabaseService
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
@@ -120,12 +127,6 @@ serve(async (req) => {
     }
 
     // Create pending subscription record
-    const supabaseService = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
     await supabaseService.from('subscriptions').insert({
       user_id: user.id,
       plan_type: plan_type,
