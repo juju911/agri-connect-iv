@@ -43,7 +43,7 @@ serve(async (req) => {
       .from('profiles')
       .select('*')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     if (!profile) {
       throw new Error("Profil utilisateur non trouvé");
@@ -73,7 +73,7 @@ serve(async (req) => {
         amount: amountInKobo,
         reference: reference,
         currency: 'XOF', // West African CFA franc
-        callback_url: `${req.headers.get('origin')}/dashboard?payment=success`,
+        callback_url: `${req.headers.get('origin')}/payment-success?reference=${reference}`,
         metadata: {
           user_id: user.id,
           plan_type: plan_type,
