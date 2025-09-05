@@ -87,13 +87,13 @@ const AdminDashboard = () => {
         `);
 
       if (usersData) {
-        const formattedUsers = usersData.map(user => ({
+        const formattedUsers = usersData.map((user: any) => ({
           id: user.id,
           name: user.name,
           email: user.user_id, // We'll need to join with auth.users for email
           role: user.role,
-          subscription_status: user.subscriptions[0]?.status as string,
-          subscription_amount: user.subscriptions[0]?.amount as number,
+          subscription_status: user.subscriptions?.[0]?.status || null,
+          subscription_amount: user.subscriptions?.[0]?.amount || null,
           created_at: user.created_at
         }));
         setUsers(formattedUsers);

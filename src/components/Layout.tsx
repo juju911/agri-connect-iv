@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Sprout, BarChart3, Users } from 'lucide-react';
+import { Sprout, BarChart3, Users, LogOut, User, Settings } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,6 +10,13 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,26 +42,69 @@ const Layout = ({ children }: LayoutProps) => {
               >
                 Accueil
               </Link>
-              <Link 
-                to="/dashboard" 
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  location.pathname === '/dashboard' ? 'text-primary' : 'text-muted-foreground'
-                }`}
-              >
-                Tableau de bord
-              </Link>
-              <Button variant="default" size="sm" asChild>
-                <Link to="/signup">Commencer</Link>
-              </Button>
+              
+              {user && profile ? (
+                <>
+                  <Link 
+                    to="/dashboard" 
+                    className={`text-sm font-medium transition-colors hover:text-primary ${
+                      location.pathname === '/dashboard' ? 'text-primary' : 'text-muted-foreground'
+                    }`}
+                  >
+                    Tableau de bord
+                  </Link>
+                  
+                  <span className="text-sm text-muted-foreground">
+                    {profile.name} ({profile.role})
+                  </span>
+                  
+                  {profile.role !== 'admin' && (
+                    <Link 
+                      to="/subscription"
+                      className={`text-sm font-medium transition-colors hover:text-primary ${
+                        location.pathname === '/subscription' ? 'text-primary' : 'text-muted-foreground'
+                      }`}
+                    >
+                      <Settings className="w-4 h-4 inline mr-1" />
+                      Abonnement
+                    </Link>
+                  )}
+                  
+                  <Button onClick={handleSignOut} variant="outline" size="sm">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Déconnexion
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    to="/auth"
+                    className={`text-sm font-medium transition-colors hover:text-primary ${
+                      location.pathname === '/auth' ? 'text-primary' : 'text-muted-foreground'
+                    }`}
+                  >
+                    Connexion
+                  </Link>
+                  <Button variant="default" size="sm" asChild>
+                    <Link to="/auth">S'inscrire</Link>
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Mobile menu button */}
             <div className="md:hidden">
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/dashboard">
-                  <BarChart3 className="w-4 h-4" />
-                </Link>
-              </Button>
+              {user ? (
+                <Button onClick={handleSignOut} variant="ghost" size="sm">
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              ) : (
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/auth">
+                    <User className="w-4 h-4" />
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>

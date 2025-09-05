@@ -62,11 +62,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
 
       if (profileData) {
         setProfile({
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           .select('*')
           .eq('user_id', userId)
           .eq('status', 'active')
-          .single();
+          .maybeSingle();
         
         if (subscriptionData) {
           setSubscription({
