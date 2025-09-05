@@ -62,11 +62,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const fetchProfile = async (userId: string) => {
     try {
-    const { data: profileData } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .maybeSingle();
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      // Si le profil n'existe pas et qu'on a une session active, 
+      // cela signifie que l'utilisateur a été supprimé de la DB mais a encore une session
+      if (!profileData && !profileError) {
+        console.log('Profil introuvable pour un utilisateur connecté. Déconnexion forcée pour recréer le compte.');
+        await supabase.auth.signOut();
+        return;
+      }
+
+      if (profileError) {
+        console.error('Erreur lors de la récupération du profil:', profileError);
+        setProfile(null);
+        return;
+      }
 
       if (profileData) {
         setProfile({
