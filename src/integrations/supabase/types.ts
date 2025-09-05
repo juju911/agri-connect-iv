@@ -95,6 +95,39 @@ export type Database = {
         }
         Relationships: []
       }
+      market_predictions: {
+        Row: {
+          confidence_level: number
+          created_at: string
+          created_by: string | null
+          id: string
+          prediction_text: string
+          prediction_type: string
+          product_name: string
+          valid_until: string
+        }
+        Insert: {
+          confidence_level: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          prediction_text: string
+          prediction_type: string
+          product_name: string
+          valid_until: string
+        }
+        Update: {
+          confidence_level?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          prediction_text?: string
+          prediction_type?: string
+          product_name?: string
+          valid_until?: string
+        }
+        Relationships: []
+      }
       newsletter_subscriptions: {
         Row: {
           email: string
@@ -116,6 +149,125 @@ export type Database = {
           is_active?: boolean
           name?: string | null
           subscribed_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          id: string
+          message: string | null
+          product_id: string
+          quantity: number
+          status: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          product_id: string
+          quantity: number
+          status?: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          product_id?: string
+          quantity?: number
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          location: string
+          name: string
+          price_per_unit: number
+          quantity: number
+          status: string
+          unit: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location: string
+          name: string
+          price_per_unit: number
+          quantity: number
+          status?: string
+          unit?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string
+          name?: string
+          price_per_unit?: number
+          quantity?: number
+          status?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          location: string | null
+          name: string
+          phone: string | null
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          name: string
+          phone?: string | null
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string | null
+          name?: string
+          phone?: string | null
+          role?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -238,6 +390,48 @@ export type Database = {
           registration_date?: string
           status?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          amount: number
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          paystack_customer_id: string | null
+          paystack_subscription_id: string | null
+          plan_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          paystack_customer_id?: string | null
+          paystack_subscription_id?: string | null
+          plan_type: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          paystack_customer_id?: string | null
+          paystack_subscription_id?: string | null
+          plan_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
