@@ -104,7 +104,7 @@ serve(async (req) => {
         amount: amountInKobo,
         reference: reference,
         currency: 'XOF', // West African CFA franc
-        callback_url: `${req.headers.get('origin')}/payment-success?reference=${reference}`,
+        callback_url: `${req.headers.get('origin')}/payment-success`,
         metadata: {
           user_id: user.id,
           plan_type: plan_type,
