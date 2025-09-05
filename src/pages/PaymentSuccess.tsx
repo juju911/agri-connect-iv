@@ -17,12 +17,25 @@ const PaymentSuccess = () => {
   const [paymentStatus, setPaymentStatus] = useState<'success' | 'failed' | 'verifying'>('verifying');
 
   useEffect(() => {
+    // Paystack peut renvoyer différents paramètres selon le contexte
     const reference = searchParams.get('reference');
     const trxref = searchParams.get('trxref');
+    const transaction = searchParams.get('transaction');
     
-    if (reference || trxref) {
-      verifyPayment(reference || trxref);
+    console.log('PaymentSuccess - URL params:', {
+      reference,
+      trxref,
+      transaction,
+      allParams: Object.fromEntries(searchParams.entries())
+    });
+    
+    const paymentRef = reference || trxref || transaction;
+    
+    if (paymentRef) {
+      console.log('PaymentSuccess - Verifying payment with reference:', paymentRef);
+      verifyPayment(paymentRef);
     } else {
+      console.log('PaymentSuccess - No payment reference found in URL');
       setPaymentStatus('failed');
       setVerifying(false);
     }
