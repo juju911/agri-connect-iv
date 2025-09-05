@@ -98,18 +98,21 @@ const Subscription = () => {
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
               {!subscription || subscription.status !== 'active' ? 
-                'Finalisez votre inscription' : 
+                '🔒 Finalisation inscription AgriChain+' : 
                 'Choisissez votre plan'
               }
             </h1>
             {!subscription || subscription.status !== 'active' ? (
-              <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                <p className="text-orange-800 font-medium mb-1">
-                  🔒 Abonnement requis pour finaliser votre inscription
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-800 font-medium mb-1">
+                  🔒 <strong>Paiement obligatoire requis</strong>
                 </p>
-                <p className="text-orange-700 text-sm">
-                  Pour accéder à AgriChain+ et commencer à utiliser la plateforme selon votre rôle, 
-                  vous devez souscrire à un abonnement. Choisissez le plan qui correspond à votre profil.
+                <p className="text-red-700 text-sm">
+                  <strong>Votre inscription ne sera finalisée qu'après confirmation du paiement via Paystack.</strong>
+                  <br />
+                  Aucun accès aux fonctionnalités AgriChain+ ne sera autorisé sans abonnement actif.
+                  <br />
+                  Sélectionnez le plan correspondant à votre rôle pour démarrer le processus de paiement.
                 </p>
               </div>
             ) : null}

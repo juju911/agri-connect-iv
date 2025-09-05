@@ -76,6 +76,7 @@ const PaymentSuccess = () => {
   };
 
   const handleContinue = () => {
+    // Redirection vers le dashboard qui affichera la vue selon le rôle
     navigate('/dashboard');
   };
 
@@ -166,13 +167,13 @@ const PaymentSuccess = () => {
                     variant="outline"
                     className="flex-1"
                   >
-                    Réessayer
+                    Réessayer le paiement
                   </Button>
                   <Button 
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/auth')}
                     className="flex-1"
                   >
-                    Continuer
+                    Se déconnecter
                   </Button>
                 </div>
               </div>

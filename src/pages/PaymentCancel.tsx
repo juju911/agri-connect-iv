@@ -38,13 +38,13 @@ const PaymentCancel = () => {
                 className="flex-1"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour aux plans
+                Finaliser le paiement
               </Button>
               <Button 
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/auth')}
                 className="flex-1 bg-gradient-hero"
               >
-                Tableau de bord
+                Se déconnecter
               </Button>
             </div>
           </CardContent>

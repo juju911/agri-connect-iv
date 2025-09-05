@@ -95,9 +95,9 @@ const Auth = () => {
     setLoading(true);
     
     try {
-      const redirectUrl = `${window.location.origin}/subscription`;
+      const redirectUrl = `${window.location.origin}/payment-success`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data: authData, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -125,16 +125,18 @@ const Auth = () => {
             variant: "destructive"
           });
         }
-      } else {
+        return;
+      }
+
+      if (authData?.user) {
         toast({
           title: "Inscription réussie !",
-          description: "Redirection vers le processus de paiement...",
+          description: "Redirection vers le processus de paiement obligatoire...",
         });
-        
-        // Redirect to subscription page for mandatory payment after successful signup
-        setTimeout(() => {
-          navigate('/subscription');
-        }, 2000);
+
+        // Redirection vers la page subscription pour le paiement obligatoire
+        // Le processus sera plus fiable en laissant l'utilisateur déclencher le paiement
+        navigate('/subscription');
       }
     } catch (error) {
       toast({
