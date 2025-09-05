@@ -11,7 +11,7 @@ import Layout from '@/components/Layout';
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { refreshProfile } = useAuth();
+  const { refreshProfile, profile } = useAuth();
   const { toast } = useToast();
   const [verifying, setVerifying] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<'success' | 'failed' | 'verifying'>('verifying');
@@ -110,8 +110,8 @@ const PaymentSuccess = () => {
             
             <CardDescription>
               {verifying && "Veuillez patienter pendant que nous vérifions votre paiement."}
-              {paymentStatus === 'success' && "Votre abonnement AgriChain+ est maintenant actif."}
-              {paymentStatus === 'failed' && "Le paiement n'a pas pu être traité."}
+              {paymentStatus === 'success' && "Félicitations ! Votre inscription est maintenant validée et votre abonnement AgriChain+ est actif."}
+              {paymentStatus === 'failed' && "Le paiement n'a pas pu être traité. Votre inscription n'est pas encore validée."}
             </CardDescription>
           </CardHeader>
           
@@ -119,22 +119,31 @@ const PaymentSuccess = () => {
             {paymentStatus === 'success' && (
               <div className="space-y-4">
                 <div className="p-4 bg-agri-green-light rounded-lg">
-                  <p className="text-sm text-agri-green font-medium">
-                    ✓ Abonnement activé
+                  <p className="text-sm text-agri-green font-medium mb-2">
+                    🎉 <strong>Inscription validée avec succès !</strong>
                   </p>
-                  <p className="text-sm text-agri-green font-medium">
-                    ✓ Accès complet débloqué
-                  </p>
-                  <p className="text-sm text-agri-green font-medium">
-                    ✓ Prêt à utiliser la plateforme
-                  </p>
+                  <div className="space-y-1">
+                    <p className="text-sm text-agri-green font-medium">
+                      ✓ Abonnement {profile?.role === 'agriculteur' ? 'Agriculteur' : 'Acheteur'} activé
+                    </p>
+                    <p className="text-sm text-agri-green font-medium">
+                      ✓ Accès complet à toutes les fonctionnalités
+                    </p>
+                    <p className="text-sm text-agri-green font-medium">
+                      ✓ Interface {profile?.role === 'agriculteur' ? 'producteur' : 'acheteur'} débloquée
+                    </p>
+                    <p className="text-sm text-agri-green font-medium">
+                      ✓ Prêt à utiliser AgriChain+ selon votre rôle
+                    </p>
+                  </div>
                 </div>
                 
                 <Button 
                   onClick={handleContinue}
                   className="w-full bg-gradient-hero hover:opacity-90"
+                  size="lg"
                 >
-                  Accéder au tableau de bord
+                  Accéder à mon {profile?.role === 'agriculteur' ? 'espace producteur' : 'espace acheteur'}
                 </Button>
               </div>
             )}
@@ -142,8 +151,12 @@ const PaymentSuccess = () => {
             {paymentStatus === 'failed' && (
               <div className="space-y-4">
                 <div className="p-4 bg-destructive/10 rounded-lg">
+                  <p className="text-sm text-destructive mb-2">
+                    ❌ <strong>Inscription non validée</strong>
+                  </p>
                   <p className="text-sm text-destructive">
-                    Le paiement n'a pas abouti. Veuillez réessayer ou contacter le support.
+                    Le paiement n'a pas abouti. Votre inscription AgriChain+ n'est pas encore validée. 
+                    Veuillez réessayer le processus de paiement ou contacter notre support.
                   </p>
                 </div>
                 

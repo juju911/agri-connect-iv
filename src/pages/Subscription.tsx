@@ -97,8 +97,22 @@ const Subscription = () => {
               <Crown className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
-              Choisissez votre plan
+              {!subscription || subscription.status !== 'active' ? 
+                'Finalisez votre inscription' : 
+                'Choisissez votre plan'
+              }
             </h1>
+            {!subscription || subscription.status !== 'active' ? (
+              <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-orange-800 font-medium mb-1">
+                  🔒 Abonnement requis pour finaliser votre inscription
+                </p>
+                <p className="text-orange-700 text-sm">
+                  Pour accéder à AgriChain+ et commencer à utiliser la plateforme selon votre rôle, 
+                  vous devez souscrire à un abonnement. Choisissez le plan qui correspond à votre profil.
+                </p>
+              </div>
+            ) : null}
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Débloquez tout le potentiel d'AgriChain+ avec un abonnement adapté à votre rôle
             </p>

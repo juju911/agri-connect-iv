@@ -16,7 +16,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, profile, subscription } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -28,12 +28,12 @@ const Auth = () => {
     location: ''
   });
 
-  // Redirect if already authenticated
+  // Redirect authenticated users with profile but no subscription to payment
   React.useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
+    if (user && profile && profile.role !== 'admin' && (!subscription || subscription.status !== 'active')) {
+      navigate('/subscription');
     }
-  }, [user, navigate]);
+  }, [user, profile, subscription, navigate]);
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -95,7 +95,7 @@ const Auth = () => {
     setLoading(true);
     
     try {
-      const redirectUrl = `${window.location.origin}/dashboard`;
+      const redirectUrl = `${window.location.origin}/subscription`;
       
       const { error } = await supabase.auth.signUp({
         email: formData.email,
@@ -128,22 +128,13 @@ const Auth = () => {
       } else {
         toast({
           title: "Inscription réussie !",
-          description: "Vérifiez votre email pour confirmer votre compte.",
+          description: "Redirection vers le processus de paiement...",
         });
         
-        // Create profile after successful signup
-        setTimeout(async () => {
-          const { data: userData } = await supabase.auth.getUser();
-          if (userData.user) {
-            await supabase.from('profiles').insert({
-              user_id: userData.user.id,
-              name: formData.name,
-              phone: formData.phone,
-              role: formData.role,
-              location: formData.location
-            });
-          }
-        }, 1000);
+        // Redirect to subscription page for mandatory payment after successful signup
+        setTimeout(() => {
+          navigate('/subscription');
+        }, 2000);
       }
     } catch (error) {
       toast({
