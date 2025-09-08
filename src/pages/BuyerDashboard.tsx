@@ -195,23 +195,53 @@ const BuyerDashboard = () => {
       <div className="min-h-screen bg-background py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-                <Users className="w-8 h-8 text-agri-orange" />
-                Tableau de bord Acheteur
-              </h1>
-              <p className="text-muted-foreground mt-2">
-                Bienvenue {profile?.name} • Plan {subscription?.plan_type}
-              </p>
+          {/* Header with Subscription Status */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+                  <Users className="w-8 h-8 text-agri-orange" />
+                  Tableau de bord Acheteur
+                </h1>
+                <p className="text-muted-foreground mt-2">
+                  Bienvenue {profile?.name}
+                </p>
+              </div>
             </div>
-            <Badge 
-              variant={subscription?.status === 'active' ? 'default' : 'secondary'}
-              className={subscription?.status === 'active' ? 'bg-agri-green' : ''}
-            >
-              {subscription?.status === 'active' ? 'Abonnement actif' : 'Abonnement inactif'}
-            </Badge>
+            
+            {/* Subscription Status Card */}
+            <Card className="mt-4 border-2 border-agri-green/20 bg-agri-green-light/10">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-agri-green animate-pulse"></div>
+                    <div>
+                      <p className="font-semibold text-agri-green">
+                        📋 Plan {subscription?.plan_type === 'acheteur' ? 'Acheteur' : 'Agriculteur'} - Abonnement annuel
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {subscription?.amount ? `${subscription.amount.toLocaleString()} F CFA/an` : '1000 F CFA/an'}
+                        {subscription?.current_period_end && (
+                          <span className="ml-2">
+                            • Expire le {new Date(subscription.current_period_end).toLocaleDateString('fr-FR', {
+                              day: '2-digit',
+                              month: 'long',
+                              year: 'numeric'
+                            })}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge 
+                    variant={subscription?.status === 'active' ? 'default' : 'secondary'}
+                    className={subscription?.status === 'active' ? 'bg-agri-green' : 'bg-red-500'}
+                  >
+                    {subscription?.status === 'active' ? '✅ Actif' : '❌ Inactif'}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Search */}

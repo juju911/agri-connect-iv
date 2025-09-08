@@ -7,6 +7,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import ActivationRequired from "./pages/ActivationRequired";
+import SubscriptionExpired from "./pages/SubscriptionExpired";
 import Dashboard from "./pages/Dashboard";
 import Subscription from "./pages/Subscription";
 import PaymentSuccess from "./pages/PaymentSuccess";
@@ -25,8 +27,18 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/activation" element={
+              <ProtectedRoute requireSubscription={false}>
+                <ActivationRequired />
+              </ProtectedRoute>
+            } />
+            <Route path="/subscription-expired" element={
+              <ProtectedRoute requireSubscription={false}>
+                <SubscriptionExpired />
+              </ProtectedRoute>
+            } />
             <Route path="/subscription" element={
-              <ProtectedRoute>
+              <ProtectedRoute requireSubscription={false}>
                 <Subscription />
               </ProtectedRoute>
             } />

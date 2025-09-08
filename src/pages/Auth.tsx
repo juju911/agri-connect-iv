@@ -28,10 +28,19 @@ const Auth = () => {
     location: ''
   });
 
-  // Redirect authenticated users with profile but no subscription to payment
+  // Redirect authenticated users based on their subscription status
   React.useEffect(() => {
-    if (user && profile && profile.role !== 'admin' && (!subscription || subscription.status !== 'active')) {
-      navigate('/subscription');
+    if (user && profile && profile.role !== 'admin') {
+      if (!subscription) {
+        // Pas d'abonnement du tout - aller à l'activation
+        navigate('/activation');
+      } else if (subscription.status === 'expired') {
+        // Abonnement expiré - aller à la page d'expiration
+        navigate('/subscription-expired');
+      } else if (subscription.status !== 'active') {
+        // Abonnement en attente ou annulé - aller à l'activation
+        navigate('/activation');
+      }
     }
   }, [user, profile, subscription, navigate]);
 
@@ -131,12 +140,11 @@ const Auth = () => {
       if (authData?.user) {
         toast({
           title: "Inscription réussie !",
-          description: "Redirection vers le processus de paiement obligatoire...",
+          description: "Redirection vers l'activation obligatoire...",
         });
 
-        // Redirection vers la page subscription pour le paiement obligatoire
-        // Le processus sera plus fiable en laissant l'utilisateur déclencher le paiement
-        navigate('/subscription');
+        // Redirection vers la page d'activation obligatoire
+        navigate('/activation');
       }
     } catch (error) {
       toast({

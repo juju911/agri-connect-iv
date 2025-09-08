@@ -19,27 +19,29 @@ const Subscription = () => {
     {
       type: 'acheteur' as const,
       name: 'Plan Acheteur',
-      price: 1000,
+      price: 1000, // Annuel
       description: 'Accédez aux produits agricoles de qualité',
       icon: Users,
       features: [
-        'Recherche de produits agricoles',
-        'Contact direct avec les agriculteurs',
-        'Historique des commandes',
+        'Recherche de produits agricoles par nom, quantité, prix et localisation',
+        'Liste complète des agriculteurs disponibles',
+        'Messagerie/contact direct avec les producteurs',
+        'Historique des commandes et transactions',
         'Support client prioritaire'
       ]
     },
     {
       type: 'agriculteur' as const,
       name: 'Plan Agriculteur',
-      price: 500,
+      price: 500, // Annuel
       description: 'Vendez vos produits et optimisez vos revenus',
       icon: Sprout,
       features: [
-        'Publication de vos produits',
-        'Prévisions IA du marché',
-        'Gestion des commandes',
-        'Outils d\'analyse des ventes'
+        'Ajout et gestion de vos cultures',
+        'Prévisions IA de la demande du marché',
+        'Liste des acheteurs intéressés par vos produits',
+        'Outils d\'analyse et statistiques de vente',
+        'Support technique agricole'
       ]
     }
   ];
@@ -137,7 +139,12 @@ const Subscription = () => {
                       Plan {subscription.plan_type === 'agriculteur' ? 'Agriculteur' : 'Acheteur'}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {(subscription.amount / 100).toLocaleString()} F CFA/mois
+                      {subscription.amount.toLocaleString()} F CFA/an
+                      {subscription.current_period_end && (
+                        <span className="block text-xs">
+                          Expire le {new Date(subscription.current_period_end).toLocaleDateString('fr-FR')}
+                        </span>
+                      )}
                     </p>
                     <Badge 
                       variant={subscription.status === 'active' ? 'default' : 'secondary'}
@@ -196,7 +203,7 @@ const Subscription = () => {
                       <span className="text-3xl font-bold text-agri-green">
                         {plan.price.toLocaleString()}
                       </span>
-                      <span className="text-muted-foreground"> F CFA/mois</span>
+                      <span className="text-muted-foreground"> F CFA/an</span>
                     </div>
                   </CardHeader>
 
@@ -220,7 +227,7 @@ const Subscription = () => {
                       )}
                       {isCurrentPlan 
                         ? 'Abonnement actuel' 
-                        : `S'abonner - ${plan.price.toLocaleString()} F CFA/mois`
+                        : `S'abonner - ${plan.price.toLocaleString()} F CFA/an`
                       }
                     </Button>
                   </CardContent>

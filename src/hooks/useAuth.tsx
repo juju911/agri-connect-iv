@@ -97,11 +97,47 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           .maybeSingle();
         
         if (subscriptionData) {
-          setSubscription({
-            ...subscriptionData,
-            plan_type: subscriptionData.plan_type as 'agriculteur' | 'acheteur',
-            status: subscriptionData.status as 'pending' | 'active' | 'cancelled' | 'expired'
-          });
+          // Vérifier si l'abonnement est vraiment encore valide
+          const now = new Date();
+          const expiryDate = subscriptionData.current_period_end ? new Date(subscriptionData.current_period_end) : null;
+          
+          if (expiryDate && now > expiryDate) {
+            // L'abonnement a expiré, mettre à jour le statut
+            await supabase
+              .from('subscriptions')
+              .update({ status: 'expired' })
+              .eq('id', subscriptionData.id);
+            
+            setSubscription({
+              ...subscriptionData,
+              plan_type: subscriptionData.plan_type as 'agriculteur' | 'acheteur',
+              status: 'expired' as 'pending' | 'active' | 'cancelled' | 'expired'
+            });
+          } else {
+            setSubscription({
+              ...subscriptionData,
+              plan_type: subscriptionData.plan_type as 'agriculteur' | 'acheteur',
+              status: subscriptionData.status as 'pending' | 'active' | 'cancelled' | 'expired'
+            });
+          }
+        } else {
+          // Chercher aussi les abonnements expirés pour afficher l'info
+          const { data: expiredSubscription } = await supabase
+            .from('subscriptions')
+            .select('*')
+            .eq('user_id', userId)
+            .in('status', ['expired', 'cancelled'])
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          
+          if (expiredSubscription) {
+            setSubscription({
+              ...expiredSubscription,
+              plan_type: expiredSubscription.plan_type as 'agriculteur' | 'acheteur',
+              status: expiredSubscription.status as 'pending' | 'active' | 'cancelled' | 'expired'
+            });
+          }
         }
       }
     } catch (error) {
